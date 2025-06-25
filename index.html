@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <title>Canciones SJMINAYA19</title>
+  <style>
+    :root {
+      --bg: #121212;
+      --box: #1e1e1e;
+      --input-bg: #2a2a2a;
+      --text: #f0f0f0;
+      --accent: #1DB954; /* Spotify Green */
+      --accent-hover: #1ed760;
+      --title: #ffa94d;
+      --btn-bg: #1DB954; 
+      --btn-hover: #1ed760;
+    }
+
+    @media (prefers-color-scheme: light) {
+      :root {
+        --bg: #f5f5f5;
+        --box: #ffffff;
+        --input-bg: #e9e9e9;
+        --text: #222;
+        --accent: #1DB954;
+        --accent-hover: #1aa34a;
+        --title: #ff7f00;
+        --btn-bg: #1DB954;
+        --btn-hover: #1aa34a;
+      }
+    }
+
+    body {
+      font-family: 'Inter', sans-serif;
+      background-color: var(--bg);
+      color: var(--text);
+      text-align: center;
+      padding: 20px;
+      margin: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 100vh;
+    }
+
+    .player-container {
+      background-color: var(--box);
+      padding: 30px;
+      border-radius: 20px;
+      box-shadow: 0 8px 30px rgba(0, 0, 0, 0.25);
+      max-width: 500px;
+      width: 100%;
+      margin: 0 auto;
+    }
+
+    h2 {
+      color: var(--title);
+      margin-bottom: 20px;
+      font-weight: 700;
+      font-size: 1.75rem;
+    }
+    
+    audio {
+        width: 100%;
+        margin: 20px 0;
+        border-radius: 5px;
+    }
+    
+    .download-section {
+        margin-top: 20px;
+    }
+    
+    .btn {
+        display: inline-block;
+        padding: 12px 24px;
+        background-color: var(--btn-bg);
+        color: white;
+        text-decoration: none;
+        border-radius: 50px;
+        font-weight: 600;
+        cursor: pointer;
+        transition: background-color 0.3s, transform 0.2s;
+        border: none;
+    }
+    .btn:hover {
+        background-color: var(--btn-hover);
+        transform: scale(1.05);
+    }
+
+    .song-list {
+      margin-top: 15px;
+      text-align: left;
+      font-size: 0.95rem;
+      background-color: var(--input-bg);
+      padding: 15px;
+      border-radius: 10px;
+      max-height: 180px;
+      overflow-y: auto;
+    }
+
+    .song-list ul {
+      list-style-type: none;
+      padding-left: 0;
+      margin: 0;
+    }
+
+    .song-list li {
+      cursor: pointer;
+      padding: 10px 12px;
+      border-radius: 6px;
+      transition: background-color 0.2s, color 0.2s;
+    }
+
+    .song-list li:hover, .song-list li.active {
+      background-color: var(--accent);
+      color: #fff;
+    }
+     .info {
+      margin-top: 20px;
+      margin-bottom: 0px;
+      font-size: 1rem;
+      word-wrap: break-word;
+      min-height: 24px;
+      color: var(--text);
+    }
+
+
+    @media (max-width: 520px) {
+      .player-container {
+        padding: 20px;
+      }
+      h2 {
+        font-size: 1.5rem;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="player-container">
+    <h2>🎵 Canciones SJMINAYA19</h2>
+    
+    <div class="info" id="songName">Selecciona una canción para empezar</div>
+
+    <audio id="audioPlayer" controls></audio>
+
+    <div class="download-section">
+      <a id="downloadButton" class="btn" style="display: none;" download>
+        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" style="margin-right: 8px; vertical-align: text-bottom;" viewBox="0 0 16 16">
+          <path d="M.5 9.9a.5.5 0 0 1 .5.5v2.5a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1v-2.5a.5.5 0 0 1 1 0v2.5a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2v-2.5a.5.5 0 0 1 .5-.5z"/>
+          <path d="M7.646 11.854a.5.5 0 0 0 .708 0l3-3a.5.5 0 0 0-.708-.708L8.5 10.293V1.5a.5.5 0 0 0-1 0v8.793L5.354 8.146a.5.5 0 1 0-.708.708l3 3z"/>
+        </svg>
+        Descargar canción
+      </a>
+    </div>
+
+    <div class="song-list">
+      <ul id="songItems"></ul>
+    </div>
+  </div>
+  
+  <script>
+    const audioPlayer = document.getElementById("audioPlayer");
+    const songItems = document.getElementById("songItems");
+    const songName = document.getElementById("songName");
+    const downloadButton = document.getElementById("downloadButton");
+    let currentSongItem = null;
+
+    // Lista de canciones con la ruta a los archivos de audio locales.
+    // DEBES colocar tus archivos .mp3 en una carpeta llamada "audio".
+    const canciones = [
+      { nombre: "Sin ti - SJ", filePath: "audio/sin-ti.mp3" },
+      { nombre: "Ritmo de Verano - SJ", filePath: "audio/ritmo-de-verano.mp3" },
+      { nombre: "Estas bien buena - SJ", filePath: "audio/estas-bien-buena.mp3" },
+      { nombre: "Dile que lo siento - SJ", filePath: "audio/dile-que-lo-siento.mp3" },
+      { nombre: "Lealtad - SJ", filePath: "audio/lealtad.mp3" },
+      { nombre: "La noches es joven - SJ", filePath: "audio/la-noche-es-joven.mp3" },
+      { nombre: "Estas bien buena (Remix) - SJ", filePath: "audio/estas-bien-buena-remix.mp3" },
+      { nombre: "Baila conmigo - SJ", filePath: "audio/baila-conmigo.mp3" },
+      { nombre: "11 de cada 10 - SJ", filePath: "audio/11-de-cada-10.mp3" },
+      { nombre: "11 de cada 10 (Remix) - SJ", filePath: "audio/11-de-cada-10-remix.mp3" },
+      { nombre: "Seducción fatal - SJ", filePath: "audio/seduccion-fatal.mp3" },
+      { nombre: "Mami chula - SJ", filePath: "audio/mami-chula.mp3" },
+      { nombre: "Fuego lento - SJ", filePath: "audio/fuego-lento.mp3" },
+      { nombre: "Noche de travesuras - SJ", filePath: "audio/noche-de-travesuras.mp3" },
+      { nombre: "Aventura Prohibida - SJ", filePath: "audio/aventura-prohibida.mp3" },
+      { nombre: "Dembow & Perreo - SJ", filePath: "audio/dembow-y-perreo.mp3" },
+      { nombre: "Pantera negra - SJ", filePath: "audio/pantera-negra.mp3" },
+      { nombre: "Fénix - SJ", filePath: "audio/fenix.mp3" },
+      { nombre: "La ciudad en soledad - SJ", filePath: "audio/la-ciudad-en-soledad.mp3" },
+      { nombre: "12 de Octubre - SJ", filePath: "audio/12-de-octubre.mp3" },
+      { nombre: "Pásame la Hookah - SJ", filePath: "audio/pasame-la-hookah.wav" },
+      { nombre: "Pásame la Hookah (Remix) - SJ", filePath: "audio/pasame-la-hookah-remix.mp3" },
+      { nombre: "Una Ninfomana - SJ", filePath: "audio/una-ninfomana.mp3" },
+      { nombre: "EXclusiva - SJ", filePath: "audio/exclusiva.mp3" },
+      { nombre: "Playa y Ron - SJ", filePath: "audio/playa-y-ron.mp3" }
+    ];
+    
+    function actualizarLista() {
+      songItems.innerHTML = ''; 
+
+      canciones.forEach((cancion) => {
+        const li = document.createElement("li");
+        li.textContent = cancion.nombre;
+        
+        li.addEventListener("click", () => {
+            audioPlayer.src = cancion.filePath;
+            audioPlayer.play();
+            
+            songName.textContent = `▶️ ${cancion.nombre}`;
+
+            if (currentSongItem) {
+              currentSongItem.classList.remove('active');
+            }
+            li.classList.add('active');
+            currentSongItem = li;
+
+            downloadButton.href = cancion.filePath;
+            downloadButton.download = cancion.filePath;
+            downloadButton.style.display = 'inline-block';
+        });
+        
+        songItems.appendChild(li);
+      });
+    }
+
+    actualizarLista();
+  </script>
+
+</body>
+</html>
