@@ -1,6 +1,10 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
+  <head>
+  <link rel="manifest" href="manifest.json">
+  <meta name="theme-color" content="#121212">
+  <title>Canciones SJMINAYA19</title>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -164,6 +168,13 @@
   </div>
   
   <script>
+    if ('serviceWorker' in navigator) {
+    navigator.serviceWorker.register('sw.js').then(function(registration) {
+      console.log('Service Worker registrado con éxito:', registration);
+    }).catch(function(error) {
+      console.log('Error al registrar el Service Worker:', error);
+    });
+  }
     const audioPlayer = document.getElementById("audioPlayer");
     const songItems = document.getElementById("songItems");
     const songName = document.getElementById("songName");
